@@ -10,5 +10,6 @@ public class RequestCreateSocieteDTO {
     private String email;
     private String password;
     private String adresse;
+    private int phone;
 
 }

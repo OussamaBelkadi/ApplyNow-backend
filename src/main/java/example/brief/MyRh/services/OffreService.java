@@ -11,10 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 public interface OffreService {
+
+
+
     OffreDTO createOffre(OffreDTO offreDTO);
     OffreDTO storeOffre(RequestOffre requestOffre);
     OffreDTO validationOffre(RequestValidationDTO validationDTO);
-    Page<Offre> listOffrePageable(Map<String, Integer> query);
+    Page<Offre> listOffrePageable(Map<String,Integer> query);
+    List<OffreDTO> FetchSocieteOffres(Long societeId);
+
 
     List<OffreDTO> SearchOffre(RequestSearchOffreDTO requestSearchOffreDTO);
+
 }

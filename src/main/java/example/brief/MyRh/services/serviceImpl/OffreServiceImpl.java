@@ -22,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import example.brief.MyRh.services.OffreService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,24 +67,48 @@ public class OffreServiceImpl implements OffreService {
 
     @Override
     public OffreDTO validationOffre(RequestValidationDTO validationDTO) {
-        Optional<Offre> offreOpt = offreRepository.findById(validationDTO.getIdOffre());
-        if (offreOpt.isPresent()){
-           Offre offre = offreOpt.get();
-           offre.setStatus(StatusOffre.valueOf(validationDTO.getStatus()));
-           offreRepository.save(offre);
-           return offreMapper.toDTO(offre);
-        }else throw new AccessOffreException(" the offre is not exist");
+        String status = validationDTO.getStatus();
+        if (status.equals(String.valueOf(StatusOffre.REJECTED)) || status.equals(String.valueOf(StatusOffre.ACCEPTED))) {
+            Optional<Offre> offreOpt = offreRepository.findById(validationDTO.getIdOffre());
+            if (offreOpt.isPresent()) {
+                Offre offre = offreOpt.get();
+                offre.setStatus(StatusOffre.valueOf(validationDTO.getStatus()));
+                offreRepository.save(offre);
+                return offreMapper.toDTO(offre);
+            } else throw new AccessOffreException(" the offre is not exist");
+        }else throw new NotExist("Verify the status of validation");
     }
 
     @Override
     public Page<Offre> listOffrePageable(Map<String, Integer> query) {
         int pageInitial = 0;
         int sizeInitial = 10;
-        if (query.get("size") < 10 || query.get("page") < 0){
+        if (query.get("size") > 10 || query.get("page") < 0){
+
             return offreRepository.findAll(PageRequest.of(pageInitial, sizeInitial));
         }else {
             return offreRepository.findAll(PageRequest.of(query.get("page"), query.get("size")));
         }
+    }
+
+
+
+
+    @Override
+    public List<OffreDTO> FetchSocieteOffres(Long societeId) {
+
+        Optional<Societe> societe = societeRepository.findById(societeId);
+        societe.orElseThrow(()-> new NotExist("No societe with this id: "));
+        List<Offre> offres = offreRepository.findAllBySociete(societe.get());
+        List<OffreDTO> offreDTOS = new ArrayList<>();
+
+        for(Offre O : offres){
+            OffreDTO offreDTO = OffreMapper.INSTANCE.toDTO(O);
+            offreDTO.setStatus(O.getStatus());
+            offreDTOS.add(offreDTO);
+            System.out.println("the offerdto status " + offreDTO.getStatus());
+        }
+        return offreDTOS;
     }
 
     @Override
@@ -106,5 +131,7 @@ public class OffreServiceImpl implements OffreService {
         List<OffreDTO> offreDTOS = this.offreMapper.toDtoList(listOffre);
         return offreDTOS;
     }
+
+
 
 }

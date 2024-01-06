@@ -1,6 +1,7 @@
 package example.brief.MyRh.dtos;
 
 import example.brief.MyRh.Enum.NiveauEtude;
+import example.brief.MyRh.Enum.StatusOffre;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,8 @@ public class OffreDTO {
     private String description;
     private String profile;
     private float salaire;
+    private StatusOffre status;
     private NiveauEtude niveau_etude;
+
 
 }

@@ -19,7 +19,7 @@ public class Societe {
     private String email;
     private String password;
     private String adresse;
-    private String phone;
+    private int phone;
     private String image;
     private String code;
     @Enumerated(EnumType.STRING)

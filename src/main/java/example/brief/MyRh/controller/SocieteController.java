@@ -2,6 +2,7 @@ package example.brief.MyRh.controller;
 
 import example.brief.MyRh.dtos.SocieteDTO;
 import example.brief.MyRh.dtos.societe.RequestCreateSocieteDTO;
+import example.brief.MyRh.services.OffreService;
 import example.brief.MyRh.services.SocieteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,10 +15,12 @@ import java.io.IOException;
 @RequestMapping("societes")
 public class SocieteController {
     private SocieteService societeService;
+    private final OffreService offreService;
 
     @Autowired
-    public SocieteController(SocieteService societeService) {
+    public SocieteController(SocieteService societeService, OffreService offreService) {
         this.societeService = societeService;
+        this.offreService = offreService;
     }
 
     @PostMapping("/register")
@@ -25,11 +28,14 @@ public class SocieteController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(this.societeService.createSociete(societeDTO));
     }
     @PostMapping("/login")
-    public ResponseEntity<SocieteDTO> loginSociete(SocieteDTO societeDTO){
+    public ResponseEntity<SocieteDTO> loginSociete(@RequestBody  SocieteDTO societeDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(this.societeService.loginSociete(societeDTO));
     }
+
+
     @PostMapping("/validation/{code}")
-     public ResponseEntity<String> validationCompteSociete(@PathVariable String code){
+    public ResponseEntity<String> validationCompteSociete(@PathVariable String code){
+
         System.out.println("code " + code);
         boolean result = this.societeService.verificationCode(code);
         if (result) {
@@ -37,4 +43,14 @@ public class SocieteController {
         }else return ResponseEntity.status(HttpStatus.CONFLICT).body("Field validation");
 
     }
+
+    @GetMapping("/offers/{societeId}")
+    public ResponseEntity Offers(@PathVariable Long societeId){
+
+        return ResponseEntity.ok(offreService.FetchSocieteOffres(societeId));
+
+    }
+
+
+
 }

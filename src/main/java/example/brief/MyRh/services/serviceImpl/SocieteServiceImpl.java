@@ -45,8 +45,11 @@ public class SocieteServiceImpl implements SocieteService {
                 .email(createSocieteDTO.getEmail())
                 .password(createSocieteDTO.getPassword())
                 .adresse(createSocieteDTO.getAdresse())
+                .phone(createSocieteDTO.getPhone())
                 .build();
+        System.out.println("the email " + societe.getEmail() + " the phone number " + societe.getPhone());
         String hashPassword = BCrypt.hashpw(societe.getPassword(), BCrypt.gensalt());
+        System.out.println("the hashed password " + hashPassword);
         if (!hashPassword.isEmpty()) {
                 MultipartFile file = createSocieteDTO.getImageFile();
             if (file != null && !file.isEmpty()) {
@@ -61,6 +64,7 @@ public class SocieteServiceImpl implements SocieteService {
             }
             String Code = UUID.randomUUID().toString();
             societe.setCode(Code);
+            societe.setPassword(hashPassword);
             societe = societeRepository.save(societe);
             emailSender.sendEmail(createSocieteDTO.getEmail(),"code verification", Code);
             return societeMapper.toDto(societe);
