@@ -1,14 +1,17 @@
 package example.brief.MyRh.services.serviceImpl;
 
+import example.brief.MyRh.Enum.PostuleStatus;
 import example.brief.MyRh.Enum.StatusOffre;
 import example.brief.MyRh.dtos.PostuleDto;
 import example.brief.MyRh.dtos.offre.request.RequestPostuleOffre;
+import example.brief.MyRh.entities.Candidat;
 import example.brief.MyRh.entities.Offre;
 import example.brief.MyRh.entities.Postule;
 import example.brief.MyRh.exceptions.exception.AccessOffreException;
 import example.brief.MyRh.exceptions.exception.NotExist;
 import example.brief.MyRh.exceptions.exception.OffreCreateException;
 import example.brief.MyRh.mappers.PostuleMapper;
+import example.brief.MyRh.repositories.CandidatRepository;
 import example.brief.MyRh.repositories.OffreRepository;
 import example.brief.MyRh.repositories.PostuleRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,24 +32,32 @@ import java.util.UUID;
 @Service
 public class PostuleServiceImpl implements PostuleService {
     private PostuleRepository postuleRepository;
+
+    private final CandidatRepository candidatRepository;
     private OffreRepository offreRepository;
     private final PostuleMapper postuleMapper;
     @Value("${UPLOAD_DIR.Cv}")
     private String pathCv;
     @Autowired
-    public PostuleServiceImpl(PostuleRepository postuleRepository, OffreRepository offreRepository) {
+    public PostuleServiceImpl(PostuleRepository postuleRepository, CandidatRepository candidatRepository, OffreRepository offreRepository) {
         this.postuleRepository = postuleRepository;
+        this.candidatRepository = candidatRepository;
         this.offreRepository = offreRepository;
         this.postuleMapper = PostuleMapper.INSTANCE;
     }
 
     @Override
     public PostuleDto potuleOffre(RequestPostuleOffre requestPostuleOffre) {
+
         Long id = requestPostuleOffre.getOffreId();
         Offre offre = offreRepository.findById(id).orElseThrow(OffreCreateException::new);
+        Optional<Candidat> candidat = candidatRepository.findById(requestPostuleOffre.getIdCandidat());
+        candidat.orElseThrow(()-> new NotExist("Ce Candidat Doesnt Exist"));
+
+
+
         Postule postule = Postule.builder()
-                .tel(requestPostuleOffre.getTel())
-                .nom_complet(requestPostuleOffre.getNom_complet())
+                .candidat(candidat.get())
                 .build();
         if(offre.getStatus().equals(StatusOffre.ACCEPTED)){
 
@@ -74,9 +85,11 @@ public class PostuleServiceImpl implements PostuleService {
                     e.printStackTrace();
                 }
             }
+
             postule = postuleRepository.save(postule);
             return postuleMapper.toDto(postule);
         }else throw new AccessOffreException("the offre don't by accessed");
+
     }
 
     @Override
@@ -90,7 +103,23 @@ public class PostuleServiceImpl implements PostuleService {
             postuleDtos.add(postuleDto);
         }
         return postuleDtos;
+
     }
+
+    //find postule By status
+    @Override
+    public List<PostuleDto> FindPostuleByStatus(Long offerId, String Status) {
+        Offre offre =   offreRepository.findById(offerId).orElseThrow(()->new NotExist("offre doest exist"));
+        List<Postule> postules = postuleRepository.findAllByOffreAndPostuleStatus(offre, PostuleStatus.valueOf(Status));
+        List<PostuleDto> postuleDtos = new ArrayList<>();
+        for (Postule P : postules){
+            PostuleDto postuleDto = PostuleMapper.INSTANCE.toDto(P);
+            postuleDtos.add(postuleDto);
+        }
+        return null;
+    }
+
+
 
 
 }
