@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("offre")
+
 public class OffreController {
     private OffreService offreService;
     private final PostuleService postuleService;
