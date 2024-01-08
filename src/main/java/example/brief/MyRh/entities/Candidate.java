@@ -14,8 +14,9 @@ public class Candidate {
     private Long id;
     private String nom;
     @Column(unique = true)
-    private String email;
+    private String email²;
     private String password;
+    @Enumerated(EnumType.STRING)
     private ConnectedStatus connected;
     @PrePersist
     @PreUpdate
