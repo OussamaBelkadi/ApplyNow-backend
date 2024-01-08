@@ -1,0 +1,20 @@
+package example.brief.MyRh.entities;
+
+import example.brief.MyRh.Enum.ConnectedStatus;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Data @AllArgsConstructor
+@NoArgsConstructor
+public class Candidate {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String nom;
+    @Column(unique = true)
+    private String email;
+    private String password;
+    private ConnectedStatus connected;
+}
