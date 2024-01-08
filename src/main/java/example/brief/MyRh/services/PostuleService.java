@@ -9,4 +9,6 @@ public interface PostuleService {
     PostuleDto potuleOffre(RequestPostuleOffre requestPostuleOffre);
 
     List<PostuleDto> findPostuleOffers(Long offereId);
+
+    List<PostuleDto> FindPostuleByStatus(Long offerId,String Status);
 }

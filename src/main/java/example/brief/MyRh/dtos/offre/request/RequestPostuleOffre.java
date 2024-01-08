@@ -9,8 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 public class RequestPostuleOffre {
     private Long offreId;
-    private String nom_complet;
-    private int tel;
+    private int idCandidat;
     private MultipartFile cv;
     private MultipartFile motivation;
 }

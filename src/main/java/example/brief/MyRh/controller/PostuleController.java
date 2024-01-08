@@ -35,15 +35,13 @@ public class PostuleController {
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> postuleOffre(   @RequestParam("offreId") Long offreId,
-                                                  @RequestParam("nom_complet") String nomComplet,
-                                                  @RequestParam("tel") int tel,
+                                                  @RequestParam("candidatId") int candidatId,
                                                   @RequestParam("cv") MultipartFile cv,
                                                   @RequestParam("motivation") MultipartFile motivation){
         RequestPostuleOffre requestPostuleOffre = RequestPostuleOffre.builder().offreId(offreId)
                 .cv(cv)
                 .motivation(motivation)
-                .nom_complet(nomComplet)
-                .tel(tel)
+                .idCandidat(candidatId)
                 .build();
         this.postuleService.potuleOffre(requestPostuleOffre);
         return ResponseEntity.status(HttpStatus.OK).body("Postuler avec success");
@@ -51,8 +49,13 @@ public class PostuleController {
 
     @GetMapping("/{offerId}")
     public ResponseEntity fetchPostuleOffers(@PathVariable Long offerId){
-
         return ResponseEntity.ok(postuleService.findPostuleOffers(offerId));
+    }
+
+    @GetMapping("/{offerId}/{status}")
+    public ResponseEntity fetchPostuleOffersByStatus(@PathVariable Long offerId,@PathVariable String status){
+
+        return ResponseEntity.ok(postuleService.FindPostuleByStatus(offerId,status));
 
     }
 
