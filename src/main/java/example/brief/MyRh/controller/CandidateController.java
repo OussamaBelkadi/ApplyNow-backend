@@ -33,8 +33,10 @@ public class CandidateController {
     }
     @PostMapping("login")
     public ResponseEntity<CandidateDTO> loginCandidate(@RequestBody CandidateDTO candidateDTO) {
-        candidateDTO = condidatService.login(candidateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(candidateDTO);
+//        candidateDTO = condidatService.login(candidateDTO);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(candidateDTO);
 
+        return null;
     }
 }
