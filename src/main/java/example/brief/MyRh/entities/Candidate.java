@@ -17,4 +17,11 @@ public class Candidate {
     private String email;
     private String password;
     private ConnectedStatus connected;
+    @PrePersist
+    @PreUpdate
+    public void checkStatus(){
+        if (this.connected == null || this.connected.describeConstable().isEmpty()){
+            this.connected = ConnectedStatus.DISCONNECT;
+        }
+    }
 }
