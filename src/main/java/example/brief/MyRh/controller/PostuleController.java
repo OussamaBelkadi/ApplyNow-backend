@@ -38,16 +38,37 @@ public class PostuleController {
                                                   @RequestParam("nom_complet") String nomComplet,
                                                   @RequestParam("tel") int tel,
                                                   @RequestParam("cv") MultipartFile cv,
-                                                  @RequestParam("motivation") MultipartFile motivation){
+                                                  @RequestParam("motivation") MultipartFile motivation,
+                                                  @RequestParam("id") Long idCondidate,
+                                                 @RequestParam("id") Long idSociete){
         RequestPostuleOffre requestPostuleOffre = RequestPostuleOffre.builder().offreId(offreId)
                 .cv(cv)
                 .motivation(motivation)
                 .nom_complet(nomComplet)
                 .tel(tel)
+                .candidateId(idCondidate)
+                .societeId(idSociete)
                 .build();
         this.postuleService.potuleOffre(requestPostuleOffre);
         return ResponseEntity.status(HttpStatus.OK).body("Postuler avec success");
     }
+
+//    @PostMapping(value = "/online", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public ResponseEntity<String> postuleOffreOnline(   @RequestParam("offreId") Long offreId,
+//                                                  @RequestParam("nom_complet") String nomComplet,
+//                                                  @RequestParam("tel") int tel,
+//                                                  @RequestParam("cv") MultipartFile cv,
+//                                                  @RequestParam("motivation") MultipartFile motivation, @RequestParam("id") Long idSociete){
+//        RequestPostuleOffre requestPostuleOffre = RequestPostuleOffre.builder().offreId(offreId)
+//                .cv(cv)
+//                .motivation(motivation)
+//                .nom_complet(nomComplet)
+//                .tel(tel)
+//                .build();
+//        this.postuleService.potuleOffre(requestPostuleOffre);
+//        return ResponseEntity.status(HttpStatus.OK).body("Postuler avec success");
+//    }
+
 
     @GetMapping("/{offerId}")
     public ResponseEntity fetchPostuleOffers(@PathVariable Long offerId){

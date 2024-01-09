@@ -9,5 +9,5 @@ public class CandidateDTO {
     private String nom;
     private String email;
     private String password;
-    private boolean connected;
+    private String connected;
 }

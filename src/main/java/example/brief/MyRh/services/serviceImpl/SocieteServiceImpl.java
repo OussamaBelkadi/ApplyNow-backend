@@ -1,6 +1,7 @@
 package example.brief.MyRh.services.serviceImpl;
 
 import example.brief.MyRh.Enum.CompteStatus;
+import example.brief.MyRh.Enum.ConnectedStatus;
 import example.brief.MyRh.Util.EmailSender;
 import example.brief.MyRh.dtos.SocieteDTO;
 import example.brief.MyRh.dtos.societe.RequestCreateSocieteDTO;
@@ -80,7 +81,10 @@ public class SocieteServiceImpl implements SocieteService {
         Optional<Societe> societeOpt = societeRepository.findByEmail(societe.getEmail());
         if (societeOpt.isPresent()){
             if(BCrypt.checkpw(societe.getPassword(), societeOpt.get().getPassword())){
-                societe = societeOpt.get();
+
+                societeOpt.get().setConnected(ConnectedStatus.CONNECTED);
+                societe = societeRepository.save(societeOpt.get());
+
             }else{
                 throw  new LoginSocieteException("the password is not correct");
             }

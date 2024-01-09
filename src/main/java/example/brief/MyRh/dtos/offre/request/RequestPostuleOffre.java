@@ -13,4 +13,6 @@ public class RequestPostuleOffre {
     private int tel;
     private MultipartFile cv;
     private MultipartFile motivation;
+    private long candidateId;
+    private long societeId;
 }

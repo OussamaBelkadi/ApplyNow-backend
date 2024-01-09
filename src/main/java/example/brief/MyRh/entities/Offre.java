@@ -1,5 +1,6 @@
 package example.brief.MyRh.entities;
 
+import example.brief.MyRh.Enum.ConnectedStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +19,6 @@ public class Offre {
     private String description;
     private String profile;
     private float salaire;
-
     @Enumerated(EnumType.STRING)
     private NiveauEtude niveau_etude;
 
@@ -38,5 +38,7 @@ public class Offre {
         if (this.status == null || this.status.describeConstable().isEmpty()){
             this.status = StatusOffre.WAITING;
         }
+
     }
+
 }
