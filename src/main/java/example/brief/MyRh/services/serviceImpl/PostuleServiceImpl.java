@@ -40,7 +40,7 @@ public class PostuleServiceImpl implements PostuleService {
     private final OffreRepository offreRepository;
     private final SocieteRepository societeRepository;
     private final CondidateRepository condidateRepository;
-=
+
     private final PostuleMapper postuleMapper;
     @Value("${UPLOAD_DIR.Cv}")
     private String pathCv;
@@ -48,7 +48,6 @@ public class PostuleServiceImpl implements PostuleService {
     public PostuleServiceImpl(PostuleRepository postuleRepository, OffreRepository offreRepository, SocieteRepository societeRepository, CondidateRepository condidateRepository) {
 
         this.postuleRepository = postuleRepository;
-        this.candidatRepository = candidatRepository;
         this.offreRepository = offreRepository;
         this.societeRepository = societeRepository;
         this.condidateRepository = condidateRepository;

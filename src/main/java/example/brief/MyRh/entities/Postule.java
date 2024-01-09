@@ -16,8 +16,6 @@ public class Postule {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    private String nom_complet;
-
 
     @ManyToOne
     private Candidate candidate;
