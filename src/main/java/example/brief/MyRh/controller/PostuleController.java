@@ -37,15 +37,26 @@ public class PostuleController {
     public ResponseEntity<String> postuleOffre(   @RequestParam("offreId") Long offreId,
                                                   @RequestParam("candidatId") int candidatId,
                                                   @RequestParam("cv") MultipartFile cv,
-                                                  @RequestParam("motivation") MultipartFile motivation){
+                                                  @RequestParam("motivation") MultipartFile motivation,
+                                                  @RequestParam("id") Long idCondidate,
+                                                 @RequestParam("id") Long idSociete){
         RequestPostuleOffre requestPostuleOffre = RequestPostuleOffre.builder().offreId(offreId)
                 .cv(cv)
                 .motivation(motivation)
+
+                .nom_complet(nomComplet)
+                .tel(tel)
+                .candidateId(idCondidate)
+                .societeId(idSociete)
+
                 .idCandidat(candidatId)
                 .build();
         this.postuleService.potuleOffre(requestPostuleOffre);
         return ResponseEntity.status(HttpStatus.OK).body("Postuler avec success");
     }
+
+
+
 
     @GetMapping("/{offerId}")
     public ResponseEntity fetchPostuleOffers(@PathVariable Long offerId){
