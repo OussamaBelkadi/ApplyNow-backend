@@ -5,6 +5,12 @@ import example.brief.MyRh.Enum.StatusOffre;
 import example.brief.MyRh.dtos.PostuleDto;
 import example.brief.MyRh.dtos.offre.request.RequestPostuleOffre;
 import example.brief.MyRh.entities.Candidate;
+
+import example.brief.MyRh.Enum.PostuleStatus;
+import example.brief.MyRh.Enum.StatusOffre;
+import example.brief.MyRh.dtos.PostuleDto;
+import example.brief.MyRh.dtos.offre.request.RequestPostuleOffre;
+import example.brief.MyRh.entities.Candidat;
 import example.brief.MyRh.entities.Offre;
 import example.brief.MyRh.entities.Postule;
 import example.brief.MyRh.entities.Societe;
@@ -13,6 +19,7 @@ import example.brief.MyRh.exceptions.exception.NotExist;
 import example.brief.MyRh.exceptions.exception.OffreCreateException;
 import example.brief.MyRh.mappers.PostuleMapper;
 import example.brief.MyRh.repositories.CondidateRepository;
+
 import example.brief.MyRh.repositories.OffreRepository;
 import example.brief.MyRh.repositories.PostuleRepository;
 import example.brief.MyRh.repositories.SocieteRepository;
@@ -37,12 +44,15 @@ public class PostuleServiceImpl implements PostuleService {
     private final OffreRepository offreRepository;
     private final SocieteRepository societeRepository;
     private final CondidateRepository condidateRepository;
+=
     private final PostuleMapper postuleMapper;
     @Value("${UPLOAD_DIR.Cv}")
     private String pathCv;
     @Autowired
     public PostuleServiceImpl(PostuleRepository postuleRepository, OffreRepository offreRepository, SocieteRepository societeRepository, CondidateRepository condidateRepository) {
+
         this.postuleRepository = postuleRepository;
+        this.candidatRepository = candidatRepository;
         this.offreRepository = offreRepository;
         this.societeRepository = societeRepository;
         this.condidateRepository = condidateRepository;
@@ -51,6 +61,7 @@ public class PostuleServiceImpl implements PostuleService {
 
     @Override
     public PostuleDto potuleOffre(RequestPostuleOffre requestPostuleOffre) {
+
         Long id = requestPostuleOffre.getOffreId();
         Offre offre = offreRepository.findById(id).orElseThrow(OffreCreateException::new);
         Candidate candidate = this.condidateRepository.findById(requestPostuleOffre.getCandidateId()).orElseThrow(()->new NotExist("the candidate not exist"));
@@ -58,6 +69,13 @@ public class PostuleServiceImpl implements PostuleService {
                 .tel(requestPostuleOffre.getTel())
                 .nom_complet(requestPostuleOffre.getNom_complet())
                 .candidate(candidate)
+        Optional<Candidat> candidat = candidatRepository.findById(requestPostuleOffre.getIdCandidat());
+        candidat.orElseThrow(()-> new NotExist("Ce Candidat Doesnt Exist"));
+
+
+
+        Postule postule = Postule.builder()
+                .candidat(candidat.get())
                 .build();
         if(offre.getStatus().equals(StatusOffre.ACCEPTED)){
             if(checkPostuleState(requestPostuleOffre.getSocieteId())){
@@ -88,8 +106,10 @@ public class PostuleServiceImpl implements PostuleService {
                 }
                 postule = postuleRepository.save(postule);
             }
+
             return postuleMapper.toDto(postule);
         }else throw new AccessOffreException("the offre don't by accessed");
+
     }
 
     @Override
@@ -103,6 +123,20 @@ public class PostuleServiceImpl implements PostuleService {
             postuleDtos.add(postuleDto);
         }
         return postuleDtos;
+
+    }
+
+    //find postule By status
+    @Override
+    public List<PostuleDto> FindPostuleByStatus(Long offerId, String Status) {
+        Offre offre =   offreRepository.findById(offerId).orElseThrow(()->new NotExist("offre doest exist"));
+        List<Postule> postules = postuleRepository.findAllByOffreAndPostuleStatus(offre, PostuleStatus.valueOf(Status));
+        List<PostuleDto> postuleDtos = new ArrayList<>();
+        for (Postule P : postules){
+            PostuleDto postuleDto = PostuleMapper.INSTANCE.toDto(P);
+            postuleDtos.add(postuleDto);
+        }
+        return null;
     }
     private boolean checkPostuleState(long societeId){
         boolean result = false;
@@ -138,5 +172,7 @@ public class PostuleServiceImpl implements PostuleService {
         }
         return pathDB;
     }
+
+
 
 }
