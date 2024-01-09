@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter @Setter
 public class CandidateDTO {
-    private Long id;
-    private String nom;
+    private String fullname;
     private String email;
     private String password;
+    private int tel;
     private String connected;
 }

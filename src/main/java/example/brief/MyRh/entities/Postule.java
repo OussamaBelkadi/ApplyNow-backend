@@ -20,24 +20,20 @@ public class Postule {
 
 
     @ManyToOne
-    private Candidat candidat;
+    private Candidate candidate;
 
     private String cv;
     private String motivation;
-    private ConnectedStatus postuleStatus;
-
 
     @Enumerated(EnumType.STRING)
-    private PostuleStatus postuleStatus;
+    private ConnectedStatus postuleStatus;
 
     @ManyToOne
     private Offre offre;
-    @ManyToOne
-    private Candidate candidate;
     @PrePersist
     @PreUpdate
     private void checkStatusConnected(){
-        if (this.postuleStatus == null && this.postuleStatus.describeConstable().isPresent()){
+        if (this.postuleStatus == null && this.postuleStatus.describeConstable().isEmpty()){
             this.postuleStatus = ConnectedStatus.DISCONNECT;
         }
     }

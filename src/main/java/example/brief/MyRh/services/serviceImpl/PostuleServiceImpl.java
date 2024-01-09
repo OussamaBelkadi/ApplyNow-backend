@@ -7,10 +7,6 @@ import example.brief.MyRh.dtos.offre.request.RequestPostuleOffre;
 import example.brief.MyRh.entities.Candidate;
 
 import example.brief.MyRh.Enum.PostuleStatus;
-import example.brief.MyRh.Enum.StatusOffre;
-import example.brief.MyRh.dtos.PostuleDto;
-import example.brief.MyRh.dtos.offre.request.RequestPostuleOffre;
-import example.brief.MyRh.entities.Candidat;
 import example.brief.MyRh.entities.Offre;
 import example.brief.MyRh.entities.Postule;
 import example.brief.MyRh.entities.Societe;
@@ -66,17 +62,8 @@ public class PostuleServiceImpl implements PostuleService {
         Offre offre = offreRepository.findById(id).orElseThrow(OffreCreateException::new);
         Candidate candidate = this.condidateRepository.findById(requestPostuleOffre.getCandidateId()).orElseThrow(()->new NotExist("the candidate not exist"));
         Postule postule = Postule.builder()
-                .tel(requestPostuleOffre.getTel())
-                .nom_complet(requestPostuleOffre.getNom_complet())
-                .candidate(candidate)
-        Optional<Candidat> candidat = candidatRepository.findById(requestPostuleOffre.getIdCandidat());
-        candidat.orElseThrow(()-> new NotExist("Ce Candidat Doesnt Exist"));
+                .candidate(candidate).build();
 
-
-
-        Postule postule = Postule.builder()
-                .candidat(candidat.get())
-                .build();
         if(offre.getStatus().equals(StatusOffre.ACCEPTED)){
             if(checkPostuleState(requestPostuleOffre.getSocieteId())){
                 postule.setOffre(offre);
