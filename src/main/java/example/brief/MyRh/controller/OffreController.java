@@ -52,11 +52,11 @@ public class OffreController {
     }
 
 
-    @PostMapping("/postuler")
-    public ResponseEntity<String> postuleOffre(@RequestBody RequestPostuleOffre requestPostuleOffre){
-        PostuleDto postuleDto = this.postuleService.potuleOffre(requestPostuleOffre);
-        return new ResponseEntity<>("the postule was add successfully " , HttpStatus.CREATED);
-    }
+//    @PostMapping("/postuler")
+//    public ResponseEntity<String> postuleOffre(@RequestBody RequestPostuleOffre requestPostuleOffre){
+//        PostuleDto postuleDto = this.postuleService.potuleOffre(requestPostuleOffre);
+//        return new ResponseEntity<>("the postule was add successfully " , HttpStatus.CREATED);
+//    }
 
     @GetMapping("/{page}/{size}")
     public ResponseEntity fetchPageable(@PathVariable int page,@PathVariable int size){

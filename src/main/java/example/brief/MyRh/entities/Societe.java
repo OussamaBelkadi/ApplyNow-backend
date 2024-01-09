@@ -1,5 +1,6 @@
 package example.brief.MyRh.entities;
 
+import example.brief.MyRh.Enum.ConnectedStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,8 @@ public class Societe {
     private String code;
     @Enumerated(EnumType.STRING)
     private CompteStatus status;
+    @Enumerated(EnumType.STRING)
+    private ConnectedStatus connected;
     @OneToMany(mappedBy = "societe", fetch = FetchType.LAZY )
     private List<Offre> offre;
 
@@ -32,6 +35,9 @@ public class Societe {
     public void checkStatus(){
         if (this.status == null || this.status.describeConstable().isEmpty()){
             this.status = CompteStatus.INVALID;
+        }
+        if (this.connected == null || this.connected.describeConstable().isEmpty()){
+            this.connected = ConnectedStatus.DISCONNECT;
         }
     }
 }
