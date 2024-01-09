@@ -31,7 +31,7 @@ public class Postule {
     @PrePersist
     @PreUpdate
     private void checkStatusConnected(){
-        if (this.postuleStatus == null && this.postuleStatus.describeConstable().isEmpty()){
+        if (this.postuleStatus == null || this.postuleStatus.describeConstable().isEmpty()){
             this.postuleStatus = ConnectedStatus.DISCONNECT;
         }
     }

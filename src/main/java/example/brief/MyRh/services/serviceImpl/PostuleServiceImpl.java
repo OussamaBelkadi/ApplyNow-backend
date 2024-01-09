@@ -62,7 +62,6 @@ public class PostuleServiceImpl implements PostuleService {
         Candidate candidate = this.condidateRepository.findById(requestPostuleOffre.getCandidateId()).orElseThrow(()->new NotExist("the candidate not exist"));
         Postule postule = Postule.builder()
                 .candidate(candidate).build();
-
         if(offre.getStatus().equals(StatusOffre.ACCEPTED)){
             if(checkPostuleState(requestPostuleOffre.getSocieteId())){
                 postule.setOffre(offre);
@@ -127,9 +126,10 @@ public class PostuleServiceImpl implements PostuleService {
     private boolean checkPostuleState(long societeId){
         boolean result = false;
         Societe societe = this.societeRepository.findById(societeId).orElseThrow(()-> new NotExist("the societe dont exist"));
-        if (societe.getStatus().equals(ConnectedStatus.CONNECTED)){
+        if (societe.getConnected().equals(ConnectedStatus.CONNECTED)){
             result = true;
         }
+        System.out.println(result);
         return  result;
     }
     private String registerCv(MultipartFile fileCv){
