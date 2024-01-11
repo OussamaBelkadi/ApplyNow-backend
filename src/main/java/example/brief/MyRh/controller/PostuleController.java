@@ -38,7 +38,8 @@ public class PostuleController {
                                                   @RequestParam("candidateId") int candidateId,
                                                   @RequestParam("cv") MultipartFile cv,
                                                   @RequestParam("motivation") MultipartFile motivation,
-                                                  @RequestParam("id") Long idSociete
+                                                  @RequestParam("id") Long idSociete,
+                                                  @RequestParam("balance") Float balance
                                                  ){
         RequestPostuleOffre requestPostuleOffre = RequestPostuleOffre.builder()
                 .offreId(offreId)
@@ -46,6 +47,7 @@ public class PostuleController {
                 .motivation(motivation)
                 .candidateId(candidateId)
                 .societeId(idSociete)
+                .balance(balance)
                 .build();
         this.postuleService.potuleOffre(requestPostuleOffre);
         return ResponseEntity.status(HttpStatus.OK).body("Postuler avec success");

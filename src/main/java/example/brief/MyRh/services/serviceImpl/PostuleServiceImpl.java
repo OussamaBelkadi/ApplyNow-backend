@@ -63,34 +63,40 @@ public class PostuleServiceImpl implements PostuleService {
         Postule postule = Postule.builder()
                 .candidate(candidate).build();
         if(offre.getStatus().equals(StatusOffre.ACCEPTED)){
-            if(checkPostuleState(requestPostuleOffre.getSocieteId())){
-                postule.setOffre(offre);
-                postule.setPostuleStatus(ConnectedStatus.CONNECTED);
-                MultipartFile fileCv = requestPostuleOffre.getCv();
-                if (fileCv != null && !fileCv.isEmpty()) {
-                    String pathCV = this.registerCv(fileCv);
-                    postule.setCv(pathCV);
+            if (candidate.getNbrPostule()==3) {
+                if (checkPostuleState(requestPostuleOffre.getSocieteId())) {
+                    postule.setOffre(offre);
+                    postule.setPostuleStatus(ConnectedStatus.CONNECTED);
+                    MultipartFile fileCv = requestPostuleOffre.getCv();
+                    if (fileCv != null && !fileCv.isEmpty()) {
+                        String pathCV = this.registerCv(fileCv);
+                        postule.setCv(pathCV);
+                    }
+                    MultipartFile fileMotivation = requestPostuleOffre.getMotivation();
+                    if (fileMotivation != null && !fileMotivation.isEmpty()) {
+                        String pathMotivation = this.registerMotivation(fileMotivation);
+                        postule.setMotivation(pathMotivation);
+                    }
+                    candidate.setNbrPostule(candidate.getNbrPostule()+1);
+                    this.condidateRepository.save(candidate);
+                    postule = postuleRepository.save(postule);
+                } else {
+                    postule.setOffre(offre);
+                    MultipartFile fileCv = requestPostuleOffre.getCv();
+                    if (fileCv != null && !fileCv.isEmpty()) {
+                        String pathCV = this.registerCv(fileCv);
+                        postule.setCv(pathCV);
+                    }
+                    MultipartFile fileMotivation = requestPostuleOffre.getMotivation();
+                    if (fileMotivation != null && !fileMotivation.isEmpty()) {
+                        String pathMotivation = this.registerMotivation(fileMotivation);
+                        postule.setMotivation(pathMotivation);
+                    }
+                    candidate.setNbrPostule(candidate.getNbrPostule()+1);
+                    this.condidateRepository.save(candidate);
+                    postule = postuleRepository.save(postule);
                 }
-                MultipartFile fileMotivation = requestPostuleOffre.getMotivation();
-                if (fileMotivation != null && !fileMotivation.isEmpty()) {
-                    String pathMotivation = this.registerMotivation(fileMotivation);
-                    postule.setMotivation(pathMotivation);
-                }
-                postule = postuleRepository.save(postule);
-            }else {
-                postule.setOffre(offre);
-                MultipartFile fileCv = requestPostuleOffre.getCv();
-                if (fileCv != null && !fileCv.isEmpty()) {
-                    String pathCV = this.registerCv(fileCv);
-                    postule.setCv(pathCV);
-                }
-                MultipartFile fileMotivation = requestPostuleOffre.getMotivation();
-                if (fileMotivation != null && !fileMotivation.isEmpty()) {
-                    String pathMotivation = this.registerMotivation(fileMotivation);
-                    postule.setMotivation(pathMotivation);
-                }
-                postule = postuleRepository.save(postule);
-            }
+            }else throw new NotExist("you have to pay");
 
             return postuleMapper.toDto(postule);
         }else throw new AccessOffreException("the offre don't by accessed");

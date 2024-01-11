@@ -9,5 +9,6 @@ public class CandidateDTO {
     private String email;
     private String password;
     private int tel;
+    private Double balance;
     private String connected;
 }

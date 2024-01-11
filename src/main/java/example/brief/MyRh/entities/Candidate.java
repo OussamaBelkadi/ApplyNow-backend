@@ -19,9 +19,13 @@ public class Candidate {
     @Column(unique = true)
     private String email;
     private String password;
+    private Double balance;
+    private Integer nbrPostule;
     @Enumerated(EnumType.STRING)
     private ConnectedStatus connected;
 
+    @OneToOne(mappedBy = "candidate")
+    private Account account;
     @OneToMany(mappedBy="candidate")
     private List<Postule> postule;
     @PrePersist
@@ -29,6 +33,9 @@ public class Candidate {
     public void checkStatus(){
         if (this.connected == null || this.connected.describeConstable().isEmpty()){
             this.connected = ConnectedStatus.DISCONNECT;
+        }
+        if (this.nbrPostule == null ){
+            this.nbrPostule = 0;
         }
     }
 }
