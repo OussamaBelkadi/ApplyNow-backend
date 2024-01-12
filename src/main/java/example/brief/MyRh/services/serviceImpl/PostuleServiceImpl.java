@@ -1,6 +1,7 @@
 package example.brief.MyRh.services.serviceImpl;
 
 import example.brief.MyRh.Enum.ConnectedStatus;
+import example.brief.MyRh.Enum.Grade;
 import example.brief.MyRh.Enum.StatusOffre;
 import example.brief.MyRh.dtos.PostuleDto;
 import example.brief.MyRh.dtos.offre.request.RequestPostuleOffre;
@@ -63,7 +64,7 @@ public class PostuleServiceImpl implements PostuleService {
         Postule postule = Postule.builder()
                 .candidate(candidate).build();
         if(offre.getStatus().equals(StatusOffre.ACCEPTED)){
-            if (candidate.getNbrPostule()==3) {
+            if (candidate.getNbrPostule()==3 && candidate.getGrade().equals(Grade.Standard)) {
                 if (checkPostuleState(requestPostuleOffre.getSocieteId())) {
                     postule.setOffre(offre);
                     postule.setPostuleStatus(ConnectedStatus.CONNECTED);

@@ -1,6 +1,7 @@
 package example.brief.MyRh.entities;
 
 import example.brief.MyRh.Enum.ConnectedStatus;
+import example.brief.MyRh.Enum.Grade;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Candidate {
     private String password;
     private Double balance;
     private Integer nbrPostule;
+    private Grade grade;
     @Enumerated(EnumType.STRING)
     private ConnectedStatus connected;
 
@@ -36,6 +38,9 @@ public class Candidate {
         }
         if (this.nbrPostule == null ){
             this.nbrPostule = 0;
+        }
+        if (this.grade == null || this.grade.describeConstable().isEmpty()){
+            this.grade = Grade.Standard;
         }
     }
 }

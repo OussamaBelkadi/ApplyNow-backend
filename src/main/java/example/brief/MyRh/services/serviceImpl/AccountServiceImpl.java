@@ -1,5 +1,6 @@
 package example.brief.MyRh.services.serviceImpl;
 
+import example.brief.MyRh.Enum.Grade;
 import example.brief.MyRh.dtos.paiement.AccountDTO;
 import example.brief.MyRh.dtos.paiement.RequestPaiement;
 import example.brief.MyRh.entities.Account;
@@ -28,11 +29,21 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public boolean effectedPayment(RequestPaiement requestPaiement) {
+        boolean result = false;
         Account account = this.accountMapper.toEntity(requestPaiement.getAccountDTO());
-        long candidateId = requestPaiement.getCandidateId();
-        Candidate candidate = this.condidateRepository.findById(candidateId).orElseThrow(()-> new NotExist("the candidate don't exist"));
-        account.setCandidate(candidate);
-        this.accountRepository.save(account);
-        return true;
+        if ( account.getBalance()>500){
+            long candidateId = requestPaiement.getCandidateId();
+            Candidate candidate = this.condidateRepository.findById(candidateId).orElseThrow(()-> new NotExist("the candidate don't exist"));
+            if( account.getBalance() == 500) {
+                candidate.setGrade(Grade.Premium);
+            }else if (account.getBalance() > 500){
+                candidate.setGrade(Grade.PremiumPlus);
+            }
+            account.setCandidate(candidate);
+            this.accountRepository.save(account);
+             result = true;
+        }
+        return result;
+
     }
 }
