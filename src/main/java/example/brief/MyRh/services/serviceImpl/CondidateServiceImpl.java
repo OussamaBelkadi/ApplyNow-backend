@@ -38,7 +38,7 @@ public class CondidateServiceImpl implements CandidateService {
     @Override
     public CandidateDTO login(CandidateDTO  candidateDTO) {
         Candidate candidate = candidateMapper.toEntity(candidateDTO);
-        Candidate candidateOpt = condidateRepository.findByEmail(candidate.getEmail()).orElseThrow(()->new NotExist("this condidate don't exist "));
+        Candidate candidateOpt = condidateRepository.findByEmail(candidate.getEmail()).orElseThrow(()->new NotExist("this condidate don't exist!"));
         if(BCrypt.checkpw(candidate.getPassword(), candidateOpt.getPassword())){
             candidateOpt.setConnected(ConnectedStatus.CONNECTED);
             candidateDTO = candidateMapper.toDTO(candidateOpt);

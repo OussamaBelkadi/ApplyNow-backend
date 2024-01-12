@@ -13,4 +13,5 @@ public class RequestPostuleOffre {
     private MultipartFile motivation;
     private long candidateId;
     private long societeId;
+    private float balance;
 }
