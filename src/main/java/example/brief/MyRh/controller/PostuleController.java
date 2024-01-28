@@ -6,6 +6,7 @@ import example.brief.MyRh.entities.Offre;
 import example.brief.MyRh.repositories.OffreRepository;
 import example.brief.MyRh.services.PostuleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("postule")
 public class PostuleController {
 

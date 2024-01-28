@@ -22,6 +22,7 @@ public class Candidate {
     private String password;
     private Double balance;
     private Integer nbrPostule;
+    @Enumerated(EnumType.STRING)
     private Grade grade;
     @Enumerated(EnumType.STRING)
     private ConnectedStatus connected;

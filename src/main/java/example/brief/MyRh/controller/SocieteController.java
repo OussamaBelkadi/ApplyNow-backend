@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("societes")
 public class SocieteController {
     private SocieteService societeService;

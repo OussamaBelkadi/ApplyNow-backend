@@ -63,8 +63,9 @@ public class PostuleServiceImpl implements PostuleService {
         Candidate candidate = this.condidateRepository.findById(requestPostuleOffre.getCandidateId()).orElseThrow(()->new NotExist("the candidate not exist"));
         Postule postule = Postule.builder()
                 .candidate(candidate).build();
+        System.out.println(candidate.getNbrPostule());
         if(offre.getStatus().equals(StatusOffre.ACCEPTED)){
-            if (candidate.getNbrPostule()==3 && candidate.getGrade().equals(Grade.Standard)) {
+            if (candidate.getNbrPostule()<3 && candidate.getGrade().equals(Grade.Standard)) {
                 if (checkPostuleState(requestPostuleOffre.getSocieteId())) {
                     postule.setOffre(offre);
                     postule.setPostuleStatus(ConnectedStatus.CONNECTED);
@@ -97,9 +98,9 @@ public class PostuleServiceImpl implements PostuleService {
                     this.condidateRepository.save(candidate);
                     postule = postuleRepository.save(postule);
                 }
+                return postuleMapper.toDto(postule);
             }else throw new NotExist("you have to pay");
 
-            return postuleMapper.toDto(postule);
         }else throw new AccessOffreException("the offre don't by accessed");
 
     }
