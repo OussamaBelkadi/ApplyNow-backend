@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("offre")
 
 public class OffreController {

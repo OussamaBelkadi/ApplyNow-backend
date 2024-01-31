@@ -1,16 +1,23 @@
 package example.brief.MyRh.services.serviceImpl;
 
+import com.stripe.exception.StripeException;
 import example.brief.MyRh.Enum.CompteStatus;
 import example.brief.MyRh.Enum.ConnectedStatus;
+import example.brief.MyRh.Enum.SubscriptionStatus;
 import example.brief.MyRh.Util.EmailSender;
+import example.brief.MyRh.dtos.CompanySubscribeResponse;
 import example.brief.MyRh.dtos.SocieteDTO;
 import example.brief.MyRh.dtos.societe.RequestCreateSocieteDTO;
 import example.brief.MyRh.entities.Societe;
+import example.brief.MyRh.exceptions.exception.BadRequestException;
 import example.brief.MyRh.exceptions.exception.LoginSocieteException;
 import example.brief.MyRh.exceptions.exception.NotExist;
 import example.brief.MyRh.mappers.SocieteMapper;
 import example.brief.MyRh.repositories.SocieteRepository;
+import example.brief.MyRh.services.CompanySubscriptionService;
+import example.brief.MyRh.services.PaymentService;
 import example.brief.MyRh.services.SocieteService;
+import jakarta.persistence.EntityNotFoundException;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,16 +32,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class SocieteServiceImpl implements SocieteService {
+public class SocieteServiceImpl implements SocieteService, CompanySubscriptionService {
     private SocieteRepository societeRepository;
     private SocieteMapper societeMapper;
     @Value("${UPLOAD_DIR.Images}")
     private static final String UPLOAD_DIR = "src/main/resources/images/";
     private final EmailSender emailSender;
+    private PaymentService paymentService;
     @Autowired
-    public SocieteServiceImpl(SocieteRepository societeRepository, EmailSender emailSender) {
+    public SocieteServiceImpl(SocieteRepository societeRepository, EmailSender emailSender, PaymentService paymentService) {
         this.societeRepository = societeRepository;
         this.emailSender = emailSender;
+        this.paymentService = paymentService;
         this.societeMapper = SocieteMapper.INSTANCE;
     }
 
@@ -101,5 +110,57 @@ public class SocieteServiceImpl implements SocieteService {
         societe.setStatus(CompteStatus.VALID);
         this.societeRepository.save(societe);
         return true;
+    }
+
+    @Override
+    public SubscriptionStatus getSubscriptionStatus(String companyId) {
+        return this.societeRepository.findById(Long.parseLong(companyId))
+                .orElseThrow(() -> new EntityNotFoundException("Company Not Found"))
+                .getSubscription();
+    }
+
+    @Override
+    public boolean subscribe(String companyId, SubscriptionStatus subscriptionStatus , String token) {
+        //: FIRST VERIFY IS THE COMPANY IS VALID WITH THE SAME SUBSCRIPTION
+        if (getSubscriptionStatus(companyId).equals(subscriptionStatus)) {
+            throw new example.brief.MyRh.exceptions.exception.BadRequestException("You are already subscribed to this subscription");
+        }
+        double amount = getAmountBasedOnSubscriptionType(subscriptionStatus);
+        //: THEN VERIFY IF THE COMPANY HAS ENOUGH MONEY TO PAY FOR THE SUBSCRIPTION
+        try{
+            boolean isPay = this.paymentService.pay(token , amount);
+            if(isPay){
+                //: THEN UPDATE THE COMPANY SUBSCRIPTION
+                Societe company = this.societeRepository.findById(Long.parseLong(companyId))
+                        .orElseThrow(() -> new EntityNotFoundException("Company Not Found"));
+                company.setSubscription(subscriptionStatus);
+                this.societeRepository.save(company);
+                return true;
+            }
+        }catch (StripeException e){
+            throw new BadRequestException("Payment Failed"+ e.getCode());
+        }
+        return false;
+    }
+
+    @Override
+    public CompanySubscribeResponse pay(String companyId, SubscriptionStatus subscriptionStatus, String token) {
+        return null;
+    }
+
+    private double getAmountBasedOnSubscriptionType(SubscriptionStatus subscriptionStatus) {
+        switch (subscriptionStatus){
+            case BASIC:
+                return 500.0;
+            case PREMIUM:
+                return 1000.0;
+            default:
+                return 0.0;
+        }
+    }
+
+    @Override
+    public boolean unsubscribe(String companyId) {
+        return false;
     }
 }
