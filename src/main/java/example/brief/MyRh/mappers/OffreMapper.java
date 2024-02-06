@@ -13,8 +13,11 @@ public interface OffreMapper {
     OffreMapper INSTANCE = Mappers.getMapper(OffreMapper.class);
 
     Offre toEntity(OffreDTO offreDTO);
+
     @Mapping(source = "societe.id", target = "idSociete")
     OffreDTO toDTO(Offre offre);
     List<OffreDTO> toDtoList(List<Offre> offers);
+
+
 
 }

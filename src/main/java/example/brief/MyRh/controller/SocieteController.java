@@ -7,6 +7,7 @@ import example.brief.MyRh.services.SocieteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.io.IOException;
 @RequestMapping("societes")
 public class SocieteController {
     private SocieteService societeService;
+
     private final OffreService offreService;
 
     @Autowired
@@ -29,12 +31,13 @@ public class SocieteController {
         return  ResponseEntity.status(HttpStatus.CREATED).body(this.societeService.createSociete(societeDTO));
     }
     @PostMapping("/login")
-    public ResponseEntity<SocieteDTO> loginSociete(@RequestBody  SocieteDTO societeDTO){
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.societeService.loginSociete(societeDTO));
+    public ResponseEntity loginSociete(@RequestBody  SocieteDTO societeDTO){
+        return ResponseEntity.ok(this.societeService.loginSociete(societeDTO));
     }
 
 
     @PostMapping("/validation/{code}")
+    @PreAuthorize("hasAuthority('Role_Agent')")
     public ResponseEntity<String> validationCompteSociete(@PathVariable String code){
 
         System.out.println("code " + code);
@@ -46,6 +49,7 @@ public class SocieteController {
     }
 
     @GetMapping("/offers/{societeId}")
+    @PreAuthorize("hasAuthority('Role_Societe')")
     public ResponseEntity Offers(@PathVariable Long societeId){
 
         return ResponseEntity.ok(offreService.FetchSocieteOffres(societeId));

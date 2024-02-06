@@ -22,10 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import example.brief.MyRh.services.OffreService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OffreServiceImpl implements OffreService {
@@ -112,6 +109,17 @@ public class OffreServiceImpl implements OffreService {
     }
 
     @Override
+    public HashMap<String, Integer> OfferStatistics(int offerId) {
+
+
+
+        return null;
+
+
+
+    }
+
+    @Override
     public List<OffreDTO> SearchOffre(RequestSearchOffreDTO requestSearchOffreDTO) {
         Specification<Offre> sec = Specification.where(null);
         String nvEduction = requestSearchOffreDTO.getNiveau_etude();
@@ -131,6 +139,8 @@ public class OffreServiceImpl implements OffreService {
         List<OffreDTO> offreDTOS = this.offreMapper.toDtoList(listOffre);
         return offreDTOS;
     }
+
+
 
 
 

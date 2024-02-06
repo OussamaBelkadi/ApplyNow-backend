@@ -2,6 +2,7 @@ package example.brief.MyRh.controller;
 
 import example.brief.MyRh.dtos.CandidateDTO;
 import example.brief.MyRh.services.CandidateService;
+
 import example.brief.MyRh.services.serviceImpl.CondidateServiceImpl;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +16,14 @@ import org.springframework.web.bind.annotation.*;
 @Builder
 public class CandidateController {
     private CandidateService condidatService;
+
+
     @Autowired
     public CandidateController(CandidateService condidatService) {
         this.condidatService = condidatService;
     }
+
+
 
     @PostMapping("register")
     public ResponseEntity<String> registerCandidate(@RequestBody CandidateDTO condidatDTO) {
@@ -33,8 +38,16 @@ public class CandidateController {
     }
     @PostMapping("login")
     public ResponseEntity<CandidateDTO> loginCandidate(@RequestBody CandidateDTO candidateDTO) {
-        candidateDTO = condidatService.login(candidateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(candidateDTO);
+
+        //String code = passwordEncoder.encode("a");
+        //System.out.println("here is the encrypt code " + code);
+
+//        candidateDTO = condidatService.login(candidateDTO);
+//
+//        return ResponseEntity.status(HttpStatus.CREATED).body(candidateDTO);
+
+        return null;
+
 
     }
 }

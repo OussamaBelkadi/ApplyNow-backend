@@ -29,8 +29,10 @@ public class OffreController {
 
     @Autowired
     public OffreController(OffreService offreService, PostuleService postuleService) {
+
         this.offreService = offreService;
         this.postuleService = postuleService;
+
     }
 
 
@@ -72,6 +74,14 @@ public class OffreController {
             offreDTOList.add(offreDTO);
         }
         return ResponseEntity.ok(offreDTOList);
+    }
+
+    @GetMapping("/statistics/{offerId}")
+    public ResponseEntity OfferStatistics(@PathVariable Long offerId){
+
+        return ResponseEntity.ok(postuleService.OfferStatistics(offerId));
+
+
     }
 
 }

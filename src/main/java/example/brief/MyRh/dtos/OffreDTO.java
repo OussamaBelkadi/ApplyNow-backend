@@ -17,4 +17,5 @@ public class OffreDTO {
     private NiveauEtude niveau_etude;
 
     private Long idSociete;
+
 }

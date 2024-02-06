@@ -1,5 +1,6 @@
 package example.brief.MyRh.exceptions.globalCatcher.exceptioHandler;
 
+import example.brief.MyRh.exceptions.exception.LoginSocieteException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,6 +18,11 @@ public class GlobalException {
 
     @ExceptionHandler(NotExist.class)
     public ResponseEntity<String> handleTheExisting(NotExist ex){
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(LoginSocieteException.class)
+    public ResponseEntity<String> HandleLogin(LoginSocieteException ex){
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

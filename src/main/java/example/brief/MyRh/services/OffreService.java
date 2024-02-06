@@ -7,6 +7,7 @@ import example.brief.MyRh.dtos.offre.request.RequestValidationDTO;
 import example.brief.MyRh.entities.Offre;
 import org.springframework.data.domain.Page;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public interface OffreService {
     OffreDTO validationOffre(RequestValidationDTO validationDTO);
     Page<Offre> listOffrePageable(Map<String,Integer> query);
     List<OffreDTO> FetchSocieteOffres(Long societeId);
-
+    HashMap<String,Integer> OfferStatistics(int offerId);
 
     List<OffreDTO> SearchOffre(RequestSearchOffreDTO requestSearchOffreDTO);
 

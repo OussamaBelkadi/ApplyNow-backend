@@ -8,6 +8,7 @@ import example.brief.MyRh.Util.EmailSender;
 import example.brief.MyRh.dtos.CompanySubscribeResponse;
 import example.brief.MyRh.dtos.SocieteDTO;
 import example.brief.MyRh.dtos.societe.RequestCreateSocieteDTO;
+import example.brief.MyRh.entities.Postule;
 import example.brief.MyRh.entities.Societe;
 import example.brief.MyRh.exceptions.exception.BadRequestException;
 import example.brief.MyRh.exceptions.exception.LoginSocieteException;
@@ -55,8 +56,9 @@ public class SocieteServiceImpl implements SocieteService, CompanySubscriptionSe
                 .email(createSocieteDTO.getEmail())
                 .password(createSocieteDTO.getPassword())
                 .adresse(createSocieteDTO.getAdresse())
-                .phone(createSocieteDTO.getPhone())
+                .phone(Integer.parseInt(createSocieteDTO.getPhone()))
                 .build();
+
         System.out.println("the email " + societe.getEmail() + " the phone number " + societe.getPhone());
         String hashPassword = BCrypt.hashpw(societe.getPassword(), BCrypt.gensalt());
         System.out.println("the hashed password " + hashPassword);
@@ -94,12 +96,13 @@ public class SocieteServiceImpl implements SocieteService, CompanySubscriptionSe
                 societeOpt.get().setConnected(ConnectedStatus.CONNECTED);
                 societe = societeRepository.save(societeOpt.get());
 
-            }else{
-                throw  new LoginSocieteException("the password is not correct");
-            }
+
             return societeMapper.toDto(societe);
+            }else{
+            throw  new LoginSocieteException("the password is not correct");
+            }
         }else {
-            throw  new LoginSocieteException("the login operation is field");
+            throw  new LoginSocieteException("the login operation is failed");
         }
 
     }
@@ -113,54 +116,16 @@ public class SocieteServiceImpl implements SocieteService, CompanySubscriptionSe
     }
 
     @Override
-    public SubscriptionStatus getSubscriptionStatus(String companyId) {
-        return this.societeRepository.findById(Long.parseLong(companyId))
-                .orElseThrow(() -> new EntityNotFoundException("Company Not Found"))
-                .getSubscription();
+    public Boolean verificationSubscription(Long companyId, String subscriptionStatus) {
+        boolean result = false;
+        Societe company = this.societeRepository.findById(companyId)
+                .orElseThrow(() -> new EntityNotFoundException("Company Not Found"));
+        company.setSubscription(SubscriptionStatus.valueOf(subscriptionStatus));
+        this.societeRepository.save(company);
+        result = true;
+        return result;
     }
 
-    @Override
-    public boolean subscribe(String companyId, SubscriptionStatus subscriptionStatus , String token) {
-        //: FIRST VERIFY IS THE COMPANY IS VALID WITH THE SAME SUBSCRIPTION
-        if (getSubscriptionStatus(companyId).equals(subscriptionStatus)) {
-            throw new example.brief.MyRh.exceptions.exception.BadRequestException("You are already subscribed to this subscription");
-        }
-        double amount = getAmountBasedOnSubscriptionType(subscriptionStatus);
-        //: THEN VERIFY IF THE COMPANY HAS ENOUGH MONEY TO PAY FOR THE SUBSCRIPTION
-        try{
-            boolean isPay = this.paymentService.pay(token , amount);
-            if(isPay){
-                //: THEN UPDATE THE COMPANY SUBSCRIPTION
-                Societe company = this.societeRepository.findById(Long.parseLong(companyId))
-                        .orElseThrow(() -> new EntityNotFoundException("Company Not Found"));
-                company.setSubscription(subscriptionStatus);
-                this.societeRepository.save(company);
-                return true;
-            }
-        }catch (StripeException e){
-            throw new BadRequestException("Payment Failed"+ e.getCode());
-        }
-        return false;
-    }
 
-    @Override
-    public CompanySubscribeResponse pay(String companyId, SubscriptionStatus subscriptionStatus, String token) {
-        return null;
-    }
 
-    private double getAmountBasedOnSubscriptionType(SubscriptionStatus subscriptionStatus) {
-        switch (subscriptionStatus){
-            case BASIC:
-                return 500.0;
-            case PREMIUM:
-                return 1000.0;
-            default:
-                return 0.0;
-        }
-    }
-
-    @Override
-    public boolean unsubscribe(String companyId) {
-        return false;
-    }
 }

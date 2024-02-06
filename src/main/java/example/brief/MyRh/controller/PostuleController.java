@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,6 +37,7 @@ public class PostuleController {
     }
 
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('Role_Candidate')")
     public ResponseEntity<String> postuleOffre(   @RequestParam("offreId") Long offreId,
                                                   @RequestParam("candidateId") int candidateId,
                                                   @RequestParam("cv") MultipartFile cv,
@@ -59,18 +61,30 @@ public class PostuleController {
 
 
     @GetMapping("/{offerId}")
+    @PreAuthorize("hasAuthority('Role_Societe')")
     public ResponseEntity fetchPostuleOffers(@PathVariable Long offerId){
         return ResponseEntity.ok(postuleService.findPostuleOffers(offerId));
     }
 
     @GetMapping("/{offerId}/{status}")
+    @PreAuthorize("hasAuthority('Role_Societe')")
     public ResponseEntity fetchPostuleOffersByStatus(@PathVariable Long offerId,@PathVariable String status){
 
         return ResponseEntity.ok(postuleService.FindPostuleByStatus(offerId,status));
 
     }
 
+    @GetMapping("/titre/{titre}")
+    @PreAuthorize("hasAuthority('Role_Societe')")
+    public ResponseEntity fetchPostuleOffersByTitre(@PathVariable String titre){
+
+        return ResponseEntity.ok(postuleService.findPostuleByTitre(titre));
+
+    }
+
+
     @GetMapping("/cv")
+    @PreAuthorize("hasAuthority('Role_Societe')")
     public ResponseEntity fetchCv(@RequestParam String cvPath) throws IOException {
         Path filePath = Paths.get(cvPath);
         byte[] fileContent = Files.readAllBytes(filePath);
@@ -81,6 +95,7 @@ public class PostuleController {
 
     }
     @GetMapping("/mt")
+    @PreAuthorize("hasAuthority('Role_Societe')")
     public ResponseEntity fetchmt(@RequestParam String mtPath) throws IOException {
         Path filePath = Paths.get(mtPath);
         byte[] fileContent = Files.readAllBytes(filePath);
@@ -90,19 +105,13 @@ public class PostuleController {
 
     }
 
-    /*@GetMapping("/{offerId}")
-    public ResponseEntity fetchPostuleOffers(@PathVariable Long offerId) throws IOException {
-        List<PostuleDto> postule = postuleService.findPostuleOffers(offerId);
-        Path filePath = Paths.get(postule.get(0).getCv());
-        byte[] fileContent = Files.readAllBytes(filePath);
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
+    @PostMapping("valide/{postuleId}/{status}")
+    @PreAuthorize("hasAuthority('Role_Societe')")
+    public ResponseEntity ValideOffre(@PathVariable Long postuleId,@PathVariable String status){
+        return ResponseEntity.ok(postuleService.ValiderCandidature(postuleId,status));
+    }
 
 
-        return new ResponseEntity<>(fileContent, headers, HttpStatus.OK);
-        //return ResponseEntity.ok(postuleService.findPostuleOffers(offerId));
-
-    }*/
 
 
 

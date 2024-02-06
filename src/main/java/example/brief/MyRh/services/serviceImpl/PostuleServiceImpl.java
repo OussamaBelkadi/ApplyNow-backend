@@ -7,7 +7,6 @@ import example.brief.MyRh.dtos.PostuleDto;
 import example.brief.MyRh.dtos.offre.request.RequestPostuleOffre;
 import example.brief.MyRh.entities.Candidate;
 
-import example.brief.MyRh.Enum.PostuleStatus;
 import example.brief.MyRh.entities.Offre;
 import example.brief.MyRh.entities.Postule;
 import example.brief.MyRh.entities.Societe;
@@ -30,10 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class PostuleServiceImpl implements PostuleService {
@@ -123,15 +119,67 @@ public class PostuleServiceImpl implements PostuleService {
     @Override
     public List<PostuleDto> FindPostuleByStatus(Long offerId, String Status) {
         Offre offre =   offreRepository.findById(offerId).orElseThrow(()->new NotExist("offre doest exist"));
-        List<Postule> postules = postuleRepository.findAllByOffreAndPostuleStatus(offre, PostuleStatus.valueOf(Status));
+        List<Postule> postules = postuleRepository.findAllByOffreAndPostuleStatus(offre, ConnectedStatus.valueOf(Status));
+
         List<PostuleDto> postuleDtos = new ArrayList<>();
+
         for (Postule P : postules){
             PostuleDto postuleDto = PostuleMapper.INSTANCE.toDto(P);
             postuleDtos.add(postuleDto);
         }
-        return null;
+        return postuleDtos;
     }
-    private boolean checkPostuleState(long societeId){
+
+    @Override
+    public List<PostuleDto> findPostuleByTitre(String Titre) {
+
+        List<Offre> offres =   offreRepository.findAllByTitre(Titre);
+        List<Postule> postules = new ArrayList<>();
+        List<PostuleDto> postuleDtos = new ArrayList<>();
+
+        for (Offre Of : offres){
+
+            postules = postuleRepository.findAllByOffre(Of);
+
+
+        }
+        for (Postule P : postules){
+            PostuleDto postuleDto = PostuleMapper.INSTANCE.toDto(P);
+            postuleDtos.add(postuleDto);
+        }
+
+        return postuleDtos;
+
+    }
+
+    @Override
+    public HashMap<String, Long> OfferStatistics(Long offerId) {
+        HashMap<String,Long> statistics = new HashMap<>();
+        Long acceptedApplication =  postuleRepository.statistics(StatusOffre.ACCEPTED ,offerId);
+        Long RefusedApplication =  postuleRepository.statistics(StatusOffre.REJECTED ,offerId);
+        Long WaitedApplication =  postuleRepository.statistics(StatusOffre.REJECTED ,offerId);
+
+        statistics.put("accepted",acceptedApplication);
+        statistics.put("refused",RefusedApplication);
+        statistics.put("pending",WaitedApplication);
+
+
+        return statistics;
+    }
+
+    @Override
+    public Boolean ValiderCandidature(Long postuleId, String Status) {
+
+        Optional<Postule> postule = Optional.ofNullable(postuleRepository.findById(postuleId).orElseThrow(() -> new NotExist("doesnt exist")));
+        postule.get().setPostuleResponse(StatusOffre.valueOf(Status));
+        postuleRepository.save(postule.get());
+        return true;
+
+    }
+
+
+    private boolean checkPostuleState(long societeId) {
+
         boolean result = false;
         Societe societe = this.societeRepository.findById(societeId).orElseThrow(()-> new NotExist("the societe dont exist"));
         if (societe.getConnected().equals(ConnectedStatus.CONNECTED)){
@@ -139,6 +187,7 @@ public class PostuleServiceImpl implements PostuleService {
         }
         System.out.println(result);
         return  result;
+
     }
     private String registerCv(MultipartFile fileCv){
         String pathDB = null;
