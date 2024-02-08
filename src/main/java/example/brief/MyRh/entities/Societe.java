@@ -36,8 +36,7 @@ public class Societe {
     private SubscriptionStatus subscription;
 
 
-    @Enumerated(EnumType.STRING)
-    private SubscriptionStatus subscription;
+
     @PrePersist
     @PreUpdate
     public void checkStatus() {

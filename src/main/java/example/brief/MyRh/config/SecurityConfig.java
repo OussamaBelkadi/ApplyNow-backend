@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/api/**").permitAll()
+                .authorizeHttpRequests(request -> request.requestMatchers("/auth/**", "/api/**","swagger-ui/**","/question/**","speciality/**").permitAll()
                 .requestMatchers("/offre/**").hasAnyAuthority("Role_Agent","Role_Societe","Role_Candidate")
                 .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

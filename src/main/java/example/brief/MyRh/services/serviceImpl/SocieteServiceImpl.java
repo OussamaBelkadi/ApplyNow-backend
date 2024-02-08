@@ -127,5 +127,23 @@ public class SocieteServiceImpl implements SocieteService, CompanySubscriptionSe
     }
 
 
+    @Override
+    public SubscriptionStatus getSubscriptionStatus(String companyId) {
+        return null;
+    }
 
+    @Override
+    public boolean subscribe(String companyId, SubscriptionStatus subscriptionStatus, String token) {
+        return false;
+    }
+
+    @Override
+    public CompanySubscribeResponse pay(String companyId, SubscriptionStatus subscriptionStatus, String token) {
+        return null;
+    }
+
+    @Override
+    public boolean unsubscribe(String companyId) {
+        return false;
+    }
 }
