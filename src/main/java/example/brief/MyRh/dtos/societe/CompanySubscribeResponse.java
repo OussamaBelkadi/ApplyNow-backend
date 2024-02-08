@@ -1,4 +1,4 @@
-package example.brief.MyRh.dtos;
+package example.brief.MyRh.dtos.societe;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

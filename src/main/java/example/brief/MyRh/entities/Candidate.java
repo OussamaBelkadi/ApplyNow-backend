@@ -7,7 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data @AllArgsConstructor
@@ -26,9 +28,14 @@ public class Candidate {
     private Grade grade;
     @Enumerated(EnumType.STRING)
     private ConnectedStatus connected;
+    private String titre;
+
+    @OneToMany(mappedBy = "candidate")
+    private Set<Test> categorizedItems = new HashSet<>();
 
     @OneToOne(mappedBy = "candidate")
     private Account account;
+
     @OneToMany(mappedBy="candidate")
     private List<Postule> postule;
     @PrePersist

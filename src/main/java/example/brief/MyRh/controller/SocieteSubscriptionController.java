@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.param.checkout.SessionCreateParams;
-import example.brief.MyRh.dtos.CompanySubscribeRequest;
-import example.brief.MyRh.dtos.CompanySubscribeResponse;
+import example.brief.MyRh.dtos.societe.CompanySubscribeRequest;
+import example.brief.MyRh.dtos.societe.CompanySubscribeResponse;
 import example.brief.MyRh.dtos.HttpRes;
 import example.brief.MyRh.entities.CheckoutPayment;
 import example.brief.MyRh.services.CompanySubscriptionService;
@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -87,12 +86,10 @@ public class SocieteSubscriptionController {
                 .setCancelUrl(
                         payment.getCancelUrl())
                 .addLineItem(
-                        SessionCreateParams.LineItem.builder().setQuantity(payment.getQuantity())
+                        SessionCreateParams.LineItem.builder()
                                 .setPriceData(
                                         SessionCreateParams.LineItem.PriceData.builder()
                                                 .setCurrency(payment.getCurrency()).setUnitAmount(payment.getAmount()*100)
-                                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData
-                                                        .builder().setName(payment.getName()).build())
                                                 .build())
                                 .build())
                 .build();

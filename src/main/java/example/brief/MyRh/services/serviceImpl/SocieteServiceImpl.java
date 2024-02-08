@@ -1,16 +1,13 @@
 package example.brief.MyRh.services.serviceImpl;
 
-import com.stripe.exception.StripeException;
 import example.brief.MyRh.Enum.CompteStatus;
 import example.brief.MyRh.Enum.ConnectedStatus;
 import example.brief.MyRh.Enum.SubscriptionStatus;
 import example.brief.MyRh.Util.EmailSender;
-import example.brief.MyRh.dtos.CompanySubscribeResponse;
+import example.brief.MyRh.dtos.societe.CompanySubscribeResponse;
 import example.brief.MyRh.dtos.SocieteDTO;
 import example.brief.MyRh.dtos.societe.RequestCreateSocieteDTO;
-import example.brief.MyRh.entities.Postule;
 import example.brief.MyRh.entities.Societe;
-import example.brief.MyRh.exceptions.exception.BadRequestException;
 import example.brief.MyRh.exceptions.exception.LoginSocieteException;
 import example.brief.MyRh.exceptions.exception.NotExist;
 import example.brief.MyRh.mappers.SocieteMapper;
@@ -127,5 +124,23 @@ public class SocieteServiceImpl implements SocieteService, CompanySubscriptionSe
     }
 
 
+    @Override
+    public SubscriptionStatus getSubscriptionStatus(String companyId) {
+        return null;
+    }
 
+    @Override
+    public boolean subscribe(String companyId, SubscriptionStatus subscriptionStatus, String token) {
+        return false;
+    }
+
+    @Override
+    public CompanySubscribeResponse pay(String companyId, SubscriptionStatus subscriptionStatus, String token) {
+        return null;
+    }
+
+    @Override
+    public boolean unsubscribe(String companyId) {
+        return false;
+    }
 }

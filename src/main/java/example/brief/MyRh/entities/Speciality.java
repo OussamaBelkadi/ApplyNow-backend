@@ -1,9 +1,11 @@
 package example.brief.MyRh.entities;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "speciality", uniqueConstraints = {
@@ -11,9 +13,13 @@ import lombok.experimental.FieldDefaults;
                             }
 )
 @Data
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@Builder
+@AllArgsConstructor @NoArgsConstructor
 public class Speciality {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String name;
+    private Long id;
+    private String name;
+    @OneToMany(mappedBy = "speciality")
+    private Set<Test> categorizedItems = new HashSet<>();
+
 }

@@ -10,6 +10,7 @@ public class CandidateDTO {
     private String email;
     private String password;
     private int tel;
+    private String titre;
     private Double balance;
     private String connected;
 }
