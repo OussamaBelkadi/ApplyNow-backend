@@ -1,7 +1,7 @@
 package example.brief.MyRh.services;
 
 import example.brief.MyRh.Enum.SubscriptionStatus;
-import example.brief.MyRh.dtos.CompanySubscribeResponse;
+import example.brief.MyRh.dtos.societe.CompanySubscribeResponse;
 
 public interface CompanySubscriptionService {
     SubscriptionStatus getSubscriptionStatus(String companyId);

@@ -1,4 +1,4 @@
-package example.brief.MyRh.dtos;
+package example.brief.MyRh.dtos.societe;
 
 import example.brief.MyRh.Enum.SubscriptionStatus;
 import lombok.AllArgsConstructor;
