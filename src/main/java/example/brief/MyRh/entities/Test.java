@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Entity
 @Immutable
 @Getter @Setter
- @NoArgsConstructor
+@NoArgsConstructor
 public class Test {
     @Embeddable
     public static class Id implements Serializable {

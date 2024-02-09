@@ -11,6 +11,6 @@ import java.util.Date;
 import java.util.List;
 
 public interface TestRepository extends JpaRepository<Test, Long> {
-    @Query("select t.date from Test  t where t.candidate.id = :candidateId order by t.date DESC")
+    @Query("select t.date from Test t where t.candidate.id = :candidateId order by t.date DESC")
     List<LocalDate> findLast3RegistrationForCandidate(@Param("candidateId") Long candidateId);
 }
