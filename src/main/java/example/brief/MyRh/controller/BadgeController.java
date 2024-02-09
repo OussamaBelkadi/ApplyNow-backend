@@ -1,6 +1,7 @@
 package example.brief.MyRh.controller;
 
 import example.brief.MyRh.dtos.CandidateDTO;
+import example.brief.MyRh.dtos.QuestionDto;
 import example.brief.MyRh.dtos.test.RequestRecord;
 import example.brief.MyRh.dtos.test.ResponseRegisterTest;
 import example.brief.MyRh.exceptions.exception.ExpiredAttempt;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -26,9 +29,9 @@ public class BadgeController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ResponseRegisterTest> registerToTest(@RequestBody CandidateDTO candidateDTO){
-        this.testService.registerToTest(candidateDTO);
-        return null;
+    public List<QuestionDto> registerToTest(@RequestBody CandidateDTO candidateDTO){
+        List<QuestionDto> questionDto = this.testService.registerToTest(candidateDTO);
+        return questionDto;
     }
 
     @PostMapping("/test")
@@ -37,4 +40,6 @@ public class BadgeController {
         if (result) return ResponseEntity.status(HttpStatus.OK).body("Congratulation you have pass the test");
         else throw new ExpiredAttempt("you didn't pass the test, next time");
     }
+
+
 }

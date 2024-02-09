@@ -9,7 +9,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 
 @EntityScan(basePackages = "example.brief.MyRh.entities")
 @SpringBootApplication
-public class RecruterProApplication implements CommandLineRunner {
+public class RecruterProApplication {
     @Autowired
     private SpecialityService specialityService;
 
@@ -17,8 +17,8 @@ public class RecruterProApplication implements CommandLineRunner {
         SpringApplication.run(RecruterProApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        specialityService.addSpeciality();
-    }
+//    @Override
+//    public void run(String... args) throws Exception {
+//        specialityService.addSpeciality();
+//    }
 }
