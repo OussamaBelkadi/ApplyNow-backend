@@ -13,8 +13,8 @@ import java.util.Optional;
 
 public interface HistoryRepository extends JpaRepository<HistoriqueTest, Long> {
 
-    @Query("select t.date from HistoriqueTest t where t.candidate.id = :candidateId order by t.date DESC")
-    List<LocalDate> findLast3RegistrationForCandidate(@Param("candidateId") Long candidateId);
+    @Query("select t.date from HistoriqueTest t where t.candidate.id = :candidateId and t.speciality.id = :specialiteId order by t.date DESC")
+    List<LocalDate> findLast3RegistrationForCandidate(@Param("candidateId") Long candidateId, @Param("specialiteId") Long specialiteId);
     @Query("select t from HistoriqueTest t where t.id = :testId order by t.date DESC limit 1")
     Optional<HistoriqueTest> findLastRegistrationForCandidate(@Param("testId") Long testId);
 
