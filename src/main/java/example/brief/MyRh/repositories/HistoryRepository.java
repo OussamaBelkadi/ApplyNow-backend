@@ -18,5 +18,5 @@ public interface HistoryRepository extends JpaRepository<HistoriqueTest, Long> {
     @Query("select t from HistoriqueTest t where t.id = :testId order by t.date DESC limit 1")
     Optional<HistoriqueTest> findLastRegistrationForCandidate(@Param("testId") Long testId);
 
-    List<HistoriqueTest> findAllByCandidateAndAndId(Candidate candidate, Test.Id id);
+    List<HistoriqueTest> findAllByCandidate(Candidate candidate);
 }

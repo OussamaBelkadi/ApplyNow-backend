@@ -4,6 +4,7 @@ import example.brief.MyRh.dtos.CandidateDTO;
 import example.brief.MyRh.dtos.QuestionDto;
 import example.brief.MyRh.dtos.test.RequestRecord;
 import example.brief.MyRh.dtos.test.ResponseRegisterTest;
+import example.brief.MyRh.dtos.test.TestRegisterDto;
 import example.brief.MyRh.exceptions.exception.ExpiredAttempt;
 import example.brief.MyRh.services.SpecialityService;
 import example.brief.MyRh.services.TestService;
@@ -28,14 +29,16 @@ public class BadgeController {
         this.testService = testService;
     }
 
+
+
     @PostMapping("/register")
-    public List<QuestionDto> registerToTest(@RequestBody CandidateDTO candidateDTO){
-        List<QuestionDto> questionDto = this.testService.registerToTest(candidateDTO);
-        return questionDto;
+    public ResponseEntity<TestRegisterDto> registerToTest(@RequestBody CandidateDTO candidateDTO){
+        return ResponseEntity.ok(this.testService.registerToTest(candidateDTO));
     }
 
     @PostMapping("/test")
     public ResponseEntity<String> recordTest(@RequestBody  RequestRecord requestRecord){
+
         boolean result = this.testService.recordTest(requestRecord);
         if (result) return ResponseEntity.status(HttpStatus.OK).body("Congratulation you have pass the test");
         else throw new ExpiredAttempt("you didn't pass the test, next time");

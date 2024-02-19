@@ -1,24 +1,29 @@
-version: '3'
-
 services:
-  recpro-db:
-    image: postgres
+  postgres:
+    image: 'postgres:latest'
     environment:
-      POSTGRES_USER: os
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: recruiter
-      PGDATA: /data/postgres
-    volumes:
-      - db:/data/postgres
+      - POSTGRES_DB=MyRh
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=0
     ports:
       - "5432:5432"
     networks:
-      - db
-    restart: unless-stopped
+      - my_network
+  spring-bk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/MyRh
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=0
+    networks:
+      - my_network
 
 networks:
-  db:
+  my_network:
     driver: bridge
-
-volumes:
-  db:
