@@ -12,9 +12,11 @@ import java.time.LocalDate;
 @Data @NoArgsConstructor @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class HistoriqueTest {
+
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
     int score;
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate date;
     @ManyToOne()
@@ -24,6 +26,5 @@ public class HistoriqueTest {
     @ManyToOne()
     @JoinColumn(name = "specialityId")
     Speciality speciality;
-
 
 }

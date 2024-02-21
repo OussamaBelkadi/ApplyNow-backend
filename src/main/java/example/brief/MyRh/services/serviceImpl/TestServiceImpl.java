@@ -4,6 +4,7 @@ import example.brief.MyRh.dtos.CandidateDTO;
 import example.brief.MyRh.dtos.QuestionDto;
 import example.brief.MyRh.dtos.test.RequestRecord;
 import example.brief.MyRh.dtos.test.ResponseRegisterTest;
+import example.brief.MyRh.dtos.test.TestRegisterDto;
 import example.brief.MyRh.entities.*;
 import example.brief.MyRh.exceptions.exception.ExpiredAttempt;
 import example.brief.MyRh.exceptions.exception.NotExist;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -33,27 +35,40 @@ public class TestServiceImpl implements TestService {
     private static int recordAvr = 8;
 
     @Override
-    public List<QuestionDto> registerToTest(CandidateDTO candidateDTO) {
+    public TestRegisterDto registerToTest(CandidateDTO candidateDTO) {
+
+        TestRegisterDto registerTest = new TestRegisterDto();
         List<QuestionDto> questionDtos = new ArrayList<>();
-        Candidate candidate = this.candidateMapper.toEntity(candidateDTO);
-        candidate= this.condidateRepository.findByEmail(candidate.getEmail()).orElseThrow(() -> new NotExist("the candidate dont exist"));
-        String titre = candidate.getTitre();
+        Candidate candidate = new Candidate();
+        Optional<Candidate> candidate1 = this.condidateRepository.findByEmail(candidateDTO.getEmail());
+        if(candidate1.isPresent()){
+            System.out.println(candidate1.get().getEmail());
+            System.out.println(candidate1.get().getFullname());
+        }else{
+            throw new NotExist("no candidat with this email");
+        }
+        String titre = candidate1.get().getTitre();
         Speciality speciality = this.specialityRepository.findByName(titre).orElseThrow(() -> new NotExist("the speciality dont exist"));
-        List<LocalDate> Dates = this.historyRepository.findLast3RegistrationForCandidate(candidate.getId(), speciality.getId());
+        List<LocalDate> Dates = this.historyRepository.findLast3RegistrationForCandidate(candidate1.get().getId(), speciality.getId());
         long record = verificationLimitedRegistrationTest(Dates);
         if ( record <= 2){
+
             LocalDate date= LocalDate.now();
-            HistoriqueTest historiqueTest = HistoriqueTest.builder().candidate(candidate).speciality(speciality).date(date).score(0).build();
-            this.historyRepository.save(historiqueTest);
-            questionDtos = fetchQuestionSpeciality(speciality.getId());
+            HistoriqueTest historiqueTest = HistoriqueTest.builder().candidate(candidate1.get()).speciality(speciality).date(date).score(0).build();
+            HistoriqueTest historiqueTest1 = this.historyRepository.save(historiqueTest);
+
+            registerTest.setQuestionList(fetchQuestionSpeciality(speciality.getId()));
+            registerTest.setCandidateId(candidate1.get().getId());
+            registerTest.setTestId(historiqueTest1.getId());
         }else throw new ExpiredAttempt("You have expired the number of attempts allowed");
 
+        return registerTest;
 
-        return questionDtos;
     }
 
     @Override
     public boolean recordTest(RequestRecord requestRecord) {
+
         boolean result = false;
         HistoriqueTest historiqueTest = this.historyRepository.findLastRegistrationForCandidate(requestRecord.getTestId()).orElseThrow(()-> new NotExist("the test don't exit"));
         historiqueTest.setScore(requestRecord.getScore());
@@ -63,11 +78,12 @@ public class TestServiceImpl implements TestService {
         if (historiqueTest.getScore() >= recordAvr) {
             Test test = new Test("os", LocalDate.now(), historiqueTest.getCandidate(), historiqueTest.getSpeciality());
             this.testRepository.save(test);
-            List<HistoriqueTest> historiqueTests = this.historyRepository.findAllByCandidateAndAndId(test.getCandidate(),test.getId());
+            List<HistoriqueTest> historiqueTests = this.historyRepository.findAllByCandidate(test.getCandidate());
             historiqueTests.stream().forEach(historiqueTest1 -> this.historyRepository.delete(historiqueTest1));
             result = true;
         }else throw new ExpiredAttempt("you didn't pass the test, next time");
         return result;
+
     }
 
     @Override

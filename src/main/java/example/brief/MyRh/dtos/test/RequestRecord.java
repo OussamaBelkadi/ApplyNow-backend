@@ -11,4 +11,5 @@ public class RequestRecord {
     long testId;
     long candidateId;
     int score;
+    //comments
 }

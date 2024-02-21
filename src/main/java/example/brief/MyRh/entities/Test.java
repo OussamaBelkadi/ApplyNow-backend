@@ -51,6 +51,7 @@ public class Test {
     private Speciality speciality;
 
     public Test(String name, LocalDate date, Candidate candidate, Speciality  speciality){
+        
         this.name = name;
         this.date = date;
         this.candidate = candidate;

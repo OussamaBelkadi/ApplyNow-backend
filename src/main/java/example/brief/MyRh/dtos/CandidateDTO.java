@@ -13,4 +13,7 @@ public class CandidateDTO {
     private String titre;
     private Double balance;
     private String connected;
+    private Long Testid;
+
+
 }

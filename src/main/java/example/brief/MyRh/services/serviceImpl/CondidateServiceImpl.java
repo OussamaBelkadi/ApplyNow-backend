@@ -12,6 +12,8 @@ import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class CondidateServiceImpl implements CandidateService {
     private CondidateRepository condidateRepository;
@@ -24,13 +26,19 @@ public class CondidateServiceImpl implements CandidateService {
 
     @Override
     public Boolean registration(CandidateDTO condidatDTO) {
+
         boolean result = false;
         Candidate condidate = candidateMapper.toEntity(condidatDTO);
-        String hashPassword = BCrypt.hashpw(condidate.getPassword(), BCrypt.gensalt());
-        if (!hashPassword.isEmpty()) {
-            condidate.setPassword(hashPassword);
-            condidateRepository.save(condidate);
+        Optional<Candidate> condidateOpt = this.condidateRepository.findByEmail(condidate.getEmail());
+        if(condidateOpt.isPresent()){
             result = true;
+        }else {
+            String hashPassword = BCrypt.hashpw(condidate.getPassword(), BCrypt.gensalt());
+            if (!hashPassword.isEmpty()) {
+                condidate.setPassword(hashPassword);
+                condidateRepository.save(condidate);
+                result = true;
+            }
         }
         return result;
     }
